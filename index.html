@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>My first three.js app</title>
+    <style>
+        body { margin: 0; }
+        canvas { display: block; }
+    </style>
+</head>
+<body>
+<script src="js/three.js"></script>
+<script>
+    const keyboard = {};
+
+    const player = { height: 1.0 }
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 0.1, 1000 );
+
+    const renderer = new THREE.WebGLRenderer();
+    renderer.setSize( window.innerWidth, window.innerHeight );
+    document.body.appendChild( renderer.domElement );
+
+    const geometry = new THREE.BoxGeometry();
+    const material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
+    const cube = new THREE.Mesh( geometry, material );
+    scene.add( cube );
+
+    const meshFloor = new THREE.Mesh(
+        new THREE.PlaneGeometry(10, 10),
+        new THREE.MeshBasicMaterial({color: 0xfff, wireframe:true})
+    );
+    scene.add(meshFloor);
+
+    camera.position.z = 5;
+    camera.position.y = player.height;
+
+    camera.lookAt(new THREE.Vector3(0, 0, 0));
+
+    function animate() {
+        requestAnimationFrame( animate );
+        cube.rotation.x += 0.02;
+        cube.rotation.y += 0.04;
+
+        if (keyboard[37]) {
+            camera.rotation.y += Math.PI * 0.01;
+        }
+
+        if (keyboard[39]) {
+            camera.rotation.y -= Math.PI * 0.01;
+        }
+
+        renderer.render( scene, camera );
+    }
+    animate();
+
+    function keyDown(event) {
+        keyboard[event.code] = true;
+    }
+
+    function keyUp(event) {
+        keyboard[event.code] = false;
+    }
+
+    window.addEventListener('keydown', keyDown);
+    window.addEventListener('keyup', keyUp);
+</script>
+</body>
+</html>
