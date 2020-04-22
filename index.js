@@ -176,28 +176,19 @@ function init() {
   scene.add(floor);
 
   // objects
-
   const sound = new THREE.PositionalAudio(listener);
 
-  const audioLoader = new THREE.AudioLoader();
-
-  audioLoader.load('tunak.mp4', buffer => {
-    sound.setBuffer(buffer);
+  navigator.mediaDevices.getUserMedia( { audio: true, video: false } ).then( (stream) => {
+    const context = listener.context;
+    const source = context.createMediaStreamSource( stream );
+    sound.setNodeSource( source );
     sound.setRefDistance(10);
-    video.play();
     sound.play();
   });
 
-  const video = document.getElementById( 'video' );
-
-  const texture = new THREE.VideoTexture( video );
-  texture.minFilter = THREE.LinearFilter;
-  texture.magFilter = THREE.LinearFilter;
-  texture.format = THREE.RGBFormat;
-
   // create an object for the sound to play from
   const theater = new THREE.BoxBufferGeometry( 50, 30, 0 );
-  const material = new THREE.MeshPhongMaterial( { color: 0xff2200, map: texture } );
+  const material = new THREE.MeshPhongMaterial( { color: 0xff2200 } );
   const mesh = new THREE.Mesh( theater, material );
   scene.add( mesh );
 
