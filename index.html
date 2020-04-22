@@ -211,7 +211,7 @@
         );
 
         const floorMaterial = new THREE.MeshBasicMaterial({
-          vertexColors: true,
+          vertexColors: true
         });
 
         const floor = new THREE.Mesh(floorGeometry, floorMaterial);
@@ -243,7 +243,7 @@
           const boxMaterial = new THREE.MeshPhongMaterial({
             specular: 0xffffff,
             flatShading: true,
-            vertexColors: true,
+            vertexColors: true
           });
           boxMaterial.color.setHSL(
             Math.random() * 0.2 + 0.5,
