@@ -183,7 +183,7 @@ function init() {
 
   audioLoader.load('tunak.mp4', buffer => {
     sound.setBuffer(buffer);
-    sound.setRefDistance(20);
+    sound.setRefDistance(10);
     video.play();
     sound.play();
   });
@@ -196,9 +196,9 @@ function init() {
   texture.format = THREE.RGBFormat;
 
   // create an object for the sound to play from
-  const sphere = new THREE.SphereBufferGeometry( 20, 32, 16 );
+  const theater = new THREE.BoxBufferGeometry( 50, 30, 0 );
   const material = new THREE.MeshPhongMaterial( { color: 0xff2200, map: texture } );
-  const mesh = new THREE.Mesh( sphere, material );
+  const mesh = new THREE.Mesh( theater, material );
   scene.add( mesh );
 
 // finally add the sound to the mesh
