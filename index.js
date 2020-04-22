@@ -31,8 +31,11 @@ function init() {
   );
   camera.position.y = 10;
 
+  const listener = new THREE.AudioListener();
+  camera.add(listener);
+
   scene = new THREE.Scene();
-  scene.background = new THREE.Color(0xffffff);
+  scene.background = new THREE.Color(0x5b5c5e);
   scene.fog = new THREE.Fog(0xffffff, 0, 750);
 
   const light = new THREE.HemisphereLight(0xeeeeff, 0x777788, 0.75);
@@ -153,9 +156,9 @@ function init() {
 
   for (let i = 0, l = position.count; i < l; i++) {
     color.setHSL(
-      Math.random() * 0.3 + 0.5,
+      270 * Math.random(),
       0.75,
-      Math.random() * 0.25 + 0.75
+      0.45 * Math.random() + .4
     );
     colors.push(color.r, color.g, color.b);
   }
@@ -174,55 +177,40 @@ function init() {
 
   // objects
 
-  let boxGeometry = new THREE.BoxBufferGeometry(20, 20, 20);
-  boxGeometry = boxGeometry.toNonIndexed(); // ensure each face has unique vertices
+  const sound = new THREE.PositionalAudio(listener);
 
-  position = boxGeometry.attributes.position;
-  colors = [];
+  const audioLoader = new THREE.AudioLoader();
 
-  for (let i = 0, l = position.count; i < l; i++) {
-    color.setHSL(
-      Math.random() * 0.3 + 0.5,
-      0.75,
-      Math.random() * 0.25 + 0.75
-    );
-    colors.push(color.r, color.g, color.b);
-  }
+  audioLoader.load('tunak.mp4', buffer => {
+    sound.setBuffer(buffer);
+    sound.setRefDistance(20);
+    video.play();
+    sound.play();
+  });
 
-  boxGeometry.setAttribute(
-    "color",
-    new THREE.Float32BufferAttribute(colors, 3)
-  );
+  const video = document.getElementById( 'video' );
 
-  for (let i = 0; i < 500; i++) {
-    const boxMaterial = new THREE.MeshPhongMaterial({
-      specular: 0xffffff,
-      flatShading: true,
-      vertexColors: true
-    });
-    boxMaterial.color.setHSL(
-      Math.random() * 0.2 + 0.5,
-      0.75,
-      Math.random() * 0.25 + 0.75
-    );
+  const texture = new THREE.VideoTexture( video );
+  texture.minFilter = THREE.LinearFilter;
+  texture.magFilter = THREE.LinearFilter;
+  texture.format = THREE.RGBFormat;
 
-    const box = new THREE.Mesh(boxGeometry, boxMaterial);
-    box.position.x = Math.floor(Math.random() * 20 - 10) * 20;
-    box.position.y = Math.floor(Math.random() * 20) * 20 + 10;
-    box.position.z = Math.floor(Math.random() * 20 - 10) * 20;
+  // create an object for the sound to play from
+  const sphere = new THREE.SphereBufferGeometry( 20, 32, 16 );
+  const material = new THREE.MeshPhongMaterial( { color: 0xff2200, map: texture } );
+  const mesh = new THREE.Mesh( sphere, material );
+  scene.add( mesh );
 
-    scene.add(box);
-    objects.push(box);
-  }
-
-  //
+// finally add the sound to the mesh
+  mesh.add( sound );
+  mesh.position.x = 0;
+  mesh.position.y = 30;
+  mesh.position.z = -100;
 
   renderer = new THREE.WebGLRenderer({ antialias: true });
   renderer.setPixelRatio(window.devicePixelRatio);
   renderer.setSize(window.innerWidth, window.innerHeight);
   document.body.appendChild(renderer.domElement);
-
-  //
 
   window.addEventListener("resize", onWindowResize, false);
 }
@@ -248,10 +236,10 @@ function animate() {
     const time = performance.now();
     const delta = (time - prevTime) / 1000;
 
-    velocity.x -= velocity.x * 10.0 * delta;
-    velocity.z -= velocity.z * 10.0 * delta;
+    velocity.x -= velocity.x * 7.0 * delta;
+    velocity.z -= velocity.z * 7.0 * delta;
 
-    velocity.y -= 9.8 * 100.0 * delta; // 100.0 = mass
+    velocity.y -= 10 * 100.0 * delta; // 100.0 = mass
 
     direction.z = Number(moveForward) - Number(moveBackward);
     direction.x = Number(moveRight) - Number(moveLeft);
