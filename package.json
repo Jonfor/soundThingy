@@ -2,7 +2,7 @@
   "dependencies": {
     "prettier": "^2.0.5",
     "reload": "^3.0.4",
-    "three": "0.115.0"
+    "three": "0.125.0"
   },
   "scripts": {
     "dev": "reload -b -p 3000",
